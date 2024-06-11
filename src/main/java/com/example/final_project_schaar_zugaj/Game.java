@@ -14,8 +14,13 @@ import com.almasb.fxgl.app.MenuItem;
 import com.almasb.fxgl.core.math.FXGLMath;
 import com.almasb.fxgl.dsl.components.OffscreenCleanComponent;
 import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.texture.Texture;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
+import java.awt.*;
 import java.util.Arrays;
 import java.util.EnumSet;
 
@@ -39,12 +44,15 @@ import static com.almasb.fxgl.dsl.FXGL.*;
  * @author Almas Baimagambetov (AlmasB) (almaslvl@gmail.com)
  */
 public class Game extends GameApplication {
+    Entity pointer;
+    Entity cookie;
+    Text cookieAmount;
 
     /**
      * Types of entities in this game.
      */
     public enum Type {
-        DROPLET, BUCKET
+        COOKIE, POINTER, PLUSONE
     }
 
     @Override
@@ -62,66 +70,84 @@ public class Game extends GameApplication {
                 "Nikita Schaar - Programmer, Designer, Planning",
                 "Moritz Zugaj - Programmer, Designer"
         ));
+        settings.setAppIcon("cookie.png");
 
         settings.getAchievements().add(new Achievement("Test", "Test", "", 0));
     }
 
     @Override
     protected void initGame() {
-        spawnBucket();
+        spawnCookie();
+        //spawnPointer();
 
-        // creates a timer that runs spawnDroplet() every second
-        run(() -> spawnDroplet(), Duration.seconds(1));
-
-        // loop background music located in /resources/assets/music/
-        loopBGM("bgm.mp3");
+        //run(() -> anyMethod(), Duration.seconds(1));
     }
 
     @Override
     protected void initPhysics() {
-        onCollisionBegin(Type.BUCKET, Type.DROPLET, (bucket, droplet) -> {
+//        onCollisionBegin(Type.BUCKET, Type.COOKIE, (bucket, cookie) -> {
+//
+//            // code in this block is called when there is a collision between Type.BUCKET and Type.DROPLET
+//
+//            // remove the collided droplet from the game
+//            cookie.removeFromWorld();
+//
+//            // play a sound effect located in /resources/assets/sounds/
+//            play("drop.wav");
+//        });
+    }
 
-            // code in this block is called when there is a collision between Type.BUCKET and Type.DROPLET
+    @Override
+    protected void initUI() {
+        cookieAmount = new Text();
+        cookieAmount.setTranslateX(15);
+        cookieAmount.setTranslateY(40);
+        cookieAmount.fontProperty().set(Font.font("Verdana", 40));
 
-            // remove the collided droplet from the game
-            droplet.removeFromWorld();
+        cookieAmount.textProperty().set(Cookie.amount + "");
 
-            // play a sound effect located in /resources/assets/sounds/
-            play("drop.wav");
-        });
+        getGameScene().addUINode(cookieAmount); // add to the scene graph
+        getGameScene();
     }
 
     @Override
     protected void onUpdate(double tpf) {
+        cookieAmount.textProperty().set(Cookie.amount + "");
 
-        // for each entity of Type.DROPLET translate (move) it down
-        getGameWorld().getEntitiesByType(Type.DROPLET).forEach(droplet -> droplet.translateY(150 * tpf));
+        getGameWorld().getEntitiesByType(Type.PLUSONE).forEach(plusOne -> plusOne.translateY(-600 * tpf));
     }
 
-    private void spawnBucket() {
-        // build an entity with Type.BUCKET
-        // at the position X = getAppWidth() / 2 and Y = getAppHeight() - 200
-        // with a view "bucket.png", which is an image located in /resources/assets/textures/
-        // also create a bounding box from that view
-        // make the entity collidable
-        // finally, complete building and attach to the game world
+    private void spawnCookie() {
+        cookie = entityBuilder()
+                .type(Type.COOKIE)
+                .at(getAppWidth() / 2 - 200, getAppHeight() / 2 - 200)
+                .viewWithBBox("cookie.png")
+                //.with(new AnimationComponent())
+                .onClick(entity -> {
+                    Cookie.handleOnClick();
+                    spawnPlusOne();
+                })
+                .buildAndAttach();
+    }
 
-        Entity bucket = entityBuilder()
-                .type(Type.BUCKET)
-                .at(getAppWidth() / 2, getAppHeight() - 200)
-                .viewWithBBox("bucket.png")
+    private void spawnPointer() {
+        pointer = entityBuilder()
+            .type(Type.POINTER)
+                .at(getInput().mouseXUIProperty().get(), getInput().mouseYUIProperty().get())
+                .viewWithBBox("pointer.png")
                 .collidable()
                 .buildAndAttach();
 
-        // bind bucket's X value to mouse X
-        bucket.xProperty().bind(getInput().mouseXUIProperty());
+        // bind properties of pointer sprite to x and y properties of mouse pointer
+        pointer.xProperty().bind(getInput().mouseXUIProperty().subtract(30));
+        pointer.yProperty().bind(getInput().mouseYUIProperty().subtract(45));
     }
 
-    private void spawnDroplet() {
+    private void spawnPlusOne() {
         entityBuilder()
-                .type(Type.DROPLET)
-                .at(FXGLMath.random(0, getAppWidth() - 64), 0)
-                .viewWithBBox("cookie.png")
+                .type(Type.PLUSONE)
+                .at(FXGLMath.random(0, getAppWidth() - 64), FXGLMath.random(64, getAppHeight() - 64))
+                .viewWithBBox("plusone.png")
                 .collidable()
                 .with(new OffscreenCleanComponent())
                 .buildAndAttach();
