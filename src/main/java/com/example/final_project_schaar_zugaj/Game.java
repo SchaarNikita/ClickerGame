@@ -114,7 +114,7 @@ public class Game extends GameApplication {
                 .buildAndAttach();
 
         // bind bucket's X value to mouse X
-        bucket.xProperty().bind(getInput().mouseYUIProperty());
+        bucket.xProperty().bind(getInput().mouseXUIProperty());
     }
 
     private void spawnDroplet() {
