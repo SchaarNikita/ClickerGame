@@ -7,11 +7,10 @@
 package com.example.final_project_schaar_zugaj;
 
 import com.almasb.fxgl.achievement.Achievement;
-import com.almasb.fxgl.app.ApplicationMode;
-import com.almasb.fxgl.app.GameApplication;
-import com.almasb.fxgl.app.GameSettings;
+import com.almasb.fxgl.app.*;
 import com.almasb.fxgl.app.MenuItem;
 import com.almasb.fxgl.core.math.FXGLMath;
+import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.dsl.components.OffscreenCleanComponent;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.texture.Texture;
@@ -47,6 +46,8 @@ public class Game extends GameApplication {
     Entity pointer;
     Entity cookie;
     Text cookieAmount;
+    Achievement beLucky;
+    boolean beLuckyCondition;
 
     /**
      * Types of entities in this game.
@@ -62,7 +63,7 @@ public class Game extends GameApplication {
         settings.setFullScreenAllowed(true);
         settings.setMainMenuEnabled(true);
         settings.setGameMenuEnabled(true);
-        settings.setFullScreenAllowed(true);
+        settings.setFullScreenAllowed(false);
         settings.setTitle("Clicker Game");
         settings.setEnabledMenuItems(EnumSet.of(MenuItem.EXTRA));
         settings.setApplicationMode(ApplicationMode.DEVELOPER);
@@ -72,7 +73,11 @@ public class Game extends GameApplication {
         ));
         settings.setAppIcon("cookie.png");
 
+        settings.setDefaultCursor(new CursorInfo("pointer.png", 33, 17));
+
         settings.getAchievements().add(new Achievement("Test", "Test", "", 0));
+        beLucky = new Achievement("Be Lucky", "Try things out and maybe you'll get it...", "beLuckyCondition", true);
+        settings.getAchievements().add(beLucky);
     }
 
     @Override
@@ -126,6 +131,8 @@ public class Game extends GameApplication {
                 .onClick(entity -> {
                     Cookie.handleOnClick();
                     spawnPlusOne();
+                    beLuckyCondition = true;
+                    //FXGL.getNotificationService().pushNotification("You clicked the cookie!");
                 })
                 .buildAndAttach();
     }
