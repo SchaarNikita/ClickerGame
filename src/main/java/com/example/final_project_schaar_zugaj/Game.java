@@ -7,47 +7,37 @@
 package com.example.final_project_schaar_zugaj;
 
 import com.almasb.fxgl.achievement.Achievement;
+import com.almasb.fxgl.achievement.AchievementService;
 import com.almasb.fxgl.app.*;
 import com.almasb.fxgl.app.MenuItem;
 import com.almasb.fxgl.core.math.FXGLMath;
+import com.almasb.fxgl.core.serialization.Bundle;
+import com.almasb.fxgl.cutscene.Cutscene;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.dsl.components.OffscreenCleanComponent;
 import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.profile.DataFile;
+import com.almasb.fxgl.profile.SaveLoadHandler;
 import com.almasb.fxgl.texture.Texture;
+import com.almasb.fxgl.ui.property.BooleanPropertyView;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.value.ObservableBooleanValue;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Point2D;
+import javafx.scene.input.KeyCode;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.awt.*;
-import java.util.Arrays;
-import java.util.EnumSet;
+import java.util.*;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
 // NOTE: this import above is crucial, it pulls in many useful methods
-
-/**
- * This is an FXGL version of the libGDX simple game tutorial, which can be found
- * here - https://github.com/libgdx/libgdx/wiki/A-simple-game
- *
- * The player can move the bucket left and right to catch water droplets.
- * There are no win/lose conditions.
- *
- * Note: for simplicity's sake all of the code is kept in this file.
- * In addition, most of typical FXGL API is not used to avoid overwhelming
- * FXGL beginners with a lot of new concepts to learn.
- *
- * Although the code is self-explanatory, some may find the comments useful
- * for following the code.
- *
- * @author Almas Baimagambetov (AlmasB) (almaslvl@gmail.com)
- */
 public class Game extends GameApplication {
-    Entity pointer;
-    Entity cookie;
     Text cookieAmount;
-    Achievement beLucky;
-    boolean beLuckyCondition;
+    Entity cookie;
 
     /**
      * Types of entities in this game.
@@ -69,41 +59,74 @@ public class Game extends GameApplication {
         settings.setApplicationMode(ApplicationMode.DEVELOPER);
         settings.getCredits().addAll(Arrays.asList(
                 "Nikita Schaar - Programmer, Designer, Planning",
-                "Moritz Zugaj - Programmer, Designer"
+                "Moritz Zugaj - Programmer, Designer, Planning"
         ));
         settings.setAppIcon("cookie.png");
-
         settings.setDefaultCursor(new CursorInfo("pointer.png", 33, 17));
 
-        settings.getAchievements().add(new Achievement("Test", "Test", "", 0));
-        beLucky = new Achievement("Be Lucky", "Try things out and maybe you'll get it...", "beLuckyCondition", true);
-        settings.getAchievements().add(beLucky);
+        // Adding all achievements + their goals to the game
+        settings.getAchievements().add(new Achievement("Be Lucky", "Click the cookie, maybe you'll get it...", "luckyCondition", true));
+        settings.getAchievements().add(new Achievement("Small Fry Clicker", "Click the cookie 100 times", "clickCount", 100));
+        settings.getAchievements().add(new Achievement("Big Fry Clicker", "Click the cookie 1000 times", "clickCount", 1000));
+        settings.getAchievements().add(new Achievement("Giga Clicker", "Click the cookie 10000 times", "clickCount", 10000));
+        settings.getAchievements().add(new Achievement("Sigma Clicker", "Click the cookie 100000 times", "clickCount", 100000));
+        settings.getAchievements().add(new Achievement("Ultimate Clicker", "Click the cookie 1000000 times", "clickCount", 1000000));
+        settings.getAchievements().add(new Achievement("Clicker G.O.A.T.", "Click the cookie 10000000 times", "clickCount", 10000000));
+    }
+
+    @Override
+    protected void onPreInit() {
+        getSaveLoadService().addHandler(new SaveLoadHandler() {
+            @Override
+            public void onSave(DataFile data) {
+                // create a new bundle to store your data
+                var bundle = new Bundle("gameData");
+
+                // store some data
+                long cookieAmount = Cookie.amount;
+                bundle.put("cookieAmount", cookieAmount);
+
+                // give the bundle to data file
+                data.putBundle(bundle);
+            }
+
+            @Override
+            public void onLoad(DataFile data) {
+                // get your previously saved bundle
+                var bundle = data.getBundle("gameData");
+
+                // retrieve some data and update your game with saved data
+                Cookie.amount = bundle.get("cookieAmount");
+            }
+        });
+    }
+
+    @Override
+    protected void initInput() {
+        onKeyDown(KeyCode.S, "Save", () -> {
+            getSaveLoadService().saveAndWriteTask("save1.sav").run();
+        });
+
+        onKeyDown(KeyCode.L, "Load", () -> {
+            getSaveLoadService().readAndLoadTask("save1.sav").run();
+        });
     }
 
     @Override
     protected void initGame() {
         spawnCookie();
-        //spawnPointer();
-
         //run(() -> anyMethod(), Duration.seconds(1));
     }
 
     @Override
-    protected void initPhysics() {
-//        onCollisionBegin(Type.BUCKET, Type.COOKIE, (bucket, cookie) -> {
-//
-//            // code in this block is called when there is a collision between Type.BUCKET and Type.DROPLET
-//
-//            // remove the collided droplet from the game
-//            cookie.removeFromWorld();
-//
-//            // play a sound effect located in /resources/assets/sounds/
-//            play("drop.wav");
-//        });
+    protected void initGameVars(Map<String, Object> vars) {
+        vars.put("luckyCondition", false);
+        vars.put("clickCount", 0);
     }
 
     @Override
     protected void initUI() {
+        // Cookie Amount Label
         cookieAmount = new Text();
         cookieAmount.setTranslateX(15);
         cookieAmount.setTranslateY(40);
@@ -112,7 +135,6 @@ public class Game extends GameApplication {
         cookieAmount.textProperty().set(Cookie.amount + "");
 
         getGameScene().addUINode(cookieAmount); // add to the scene graph
-        getGameScene();
     }
 
     @Override
@@ -129,25 +151,18 @@ public class Game extends GameApplication {
                 .viewWithBBox("cookie.png")
                 //.with(new AnimationComponent())
                 .onClick(entity -> {
+                    animationBuilder()
+                            .translate(cookie)
+                            .from(new Point2D(200, 200))
+                            .to(new Point2D(200, 230))
+                            .from(new Point2D(200, 230))
+                            .to(new Point2D(200, 200))
+                            .buildAndPlay();
                     Cookie.handleOnClick();
                     spawnPlusOne();
-                    beLuckyCondition = true;
-                    //FXGL.getNotificationService().pushNotification("You clicked the cookie!");
+                    handleClickAchievements();
                 })
                 .buildAndAttach();
-    }
-
-    private void spawnPointer() {
-        pointer = entityBuilder()
-            .type(Type.POINTER)
-                .at(getInput().mouseXUIProperty().get(), getInput().mouseYUIProperty().get())
-                .viewWithBBox("pointer.png")
-                .collidable()
-                .buildAndAttach();
-
-        // bind properties of pointer sprite to x and y properties of mouse pointer
-        pointer.xProperty().bind(getInput().mouseXUIProperty().subtract(30));
-        pointer.yProperty().bind(getInput().mouseYUIProperty().subtract(45));
     }
 
     private void spawnPlusOne() {
@@ -158,6 +173,60 @@ public class Game extends GameApplication {
                 .collidable()
                 .with(new OffscreenCleanComponent())
                 .buildAndAttach();
+    }
+
+    public void handleClickAchievements() {
+        // update clickCount
+        set("clickCount", geti("clickCount") + 1);
+
+        // Achievement: Be Lucky
+        if(!getb("luckyCondition")) {
+            if(random(0, 50000) == 12345) {
+                FXGL.set("luckyCondition", true);
+                getNotificationService().setBackgroundColor(Color.SEASHELL);
+                getNotificationService().pushNotification("Got achievement \"Be Lucky\"!");
+            }
+        }
+
+        // Achievement: Small Fry Clicker
+        if(geti("clickCount") == 100) {
+            getNotificationService().setBackgroundColor(Color.SEASHELL);
+            getNotificationService().pushNotification("Got achievement \"Small Fry Clicker\"!");
+        }
+
+        // Achievement: Big Fry Clicker
+        if(geti("clickCount") == 1000) {
+            getNotificationService().setBackgroundColor(Color.SEASHELL);
+            getNotificationService().pushNotification("Got achievement \"Big Fry Clicker\"!");
+        }
+
+        // Achievement: Giga Clicker
+        if(geti("clickCount") == 10000) {
+            getNotificationService().setBackgroundColor(Color.SEASHELL);
+            getNotificationService().pushNotification("Got achievement \"Giga Clicker\"!");
+        }
+
+        // Achievement: Sigma Clicker
+        if(geti("clickCount") == 100000) {
+            getNotificationService().setBackgroundColor(Color.SEASHELL);
+            getNotificationService().pushNotification("Got achievement \"Sigma Clicker\"!");
+        }
+
+        // Achievement: Ultimate Clicker
+        if(geti("clickCount") == 1000000) {
+            getNotificationService().setBackgroundColor(Color.SEASHELL);
+            getNotificationService().pushNotification("Got achievement \"Ultimate Clicker\"!");
+        }
+
+        // Achievement: Clicker G.O.A.T.
+        if(geti("clickCount") == 10000000) {
+            getNotificationService().setBackgroundColor(Color.SEASHELL);
+            getNotificationService().pushNotification("Got achievement \"Clicker G.O.A.T.\"!");
+        }
+    }
+
+    public void handlePassiveAchievements() {
+        // achievements got through passive means will be checked for here
     }
 
     public static void main(String[] args) {
