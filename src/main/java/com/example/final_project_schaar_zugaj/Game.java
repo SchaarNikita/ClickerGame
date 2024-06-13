@@ -148,7 +148,7 @@ public class Game extends GameApplication {
         cookie = entityBuilder()
                 .type(Type.COOKIE)
                 .at(getAppWidth() / 2 - 200, getAppHeight() / 2 - 200)
-                .viewWithBBox("cookie.png")
+                .viewWithBBox("Cookie_test.png")
                 //.with(new AnimationComponent())
                 .onClick(entity -> {
                     animationBuilder()

@@ -5,7 +5,7 @@ import javafx.scene.Scene;
 
 public class ItemShop {
     public enum GrandmaUpgradeType{
-        FARMER, MINER, WORKERS, BAKERS
+        FARMER, MINER, WORKER, BAKER
     }
     public enum MouseUpgradeType{
         REINFORCED, AMBIDEXTROUS, THOUSANDFINGER

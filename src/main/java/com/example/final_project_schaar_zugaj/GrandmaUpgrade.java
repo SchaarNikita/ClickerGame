@@ -5,7 +5,6 @@ public class GrandmaUpgrade {
     private String description;
 
     private int level;
-    public GrandmaUpgrade(double multiplier, String description, ItemShop.GrandmaUpgradeType INSTANCE, int level){
 
-    }
+
 }
