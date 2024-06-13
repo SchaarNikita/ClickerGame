@@ -4,10 +4,11 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 
 public class ItemShop {
-    public enum GrandmaUpgradeType{
+    public enum GrandmaUpgradeType {
         FARMER, MINER, WORKER, BAKER
     }
-    public enum MouseUpgradeType{
+
+    public enum MouseUpgradeType {
         REINFORCED, AMBIDEXTROUS, THOUSANDFINGER
     }
 
@@ -15,12 +16,6 @@ public class ItemShop {
     //window für shopsite
     //Group g1 = new Group();
     //Scene itemshop = new Scene(g1, 100, 150)
-
-
-
-
-
-
 
 
 }

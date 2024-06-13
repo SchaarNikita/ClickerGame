@@ -34,6 +34,7 @@ import java.awt.*;
 import java.util.*;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
+
 // NOTE: this import above is crucial, it pulls in many useful methods
 public class Game extends GameApplication {
     Text cookieAmount;
@@ -180,8 +181,8 @@ public class Game extends GameApplication {
         set("clickCount", geti("clickCount") + 1);
 
         // Achievement: Be Lucky
-        if(!getb("luckyCondition")) {
-            if(random(0, 50000) == 12345) {
+        if (!getb("luckyCondition")) {
+            if (random(0, 50000) == 12345) {
                 FXGL.set("luckyCondition", true);
                 getNotificationService().setBackgroundColor(Color.SEASHELL);
                 getNotificationService().pushNotification("Got achievement \"Be Lucky\"!");
@@ -189,37 +190,37 @@ public class Game extends GameApplication {
         }
 
         // Achievement: Small Fry Clicker
-        if(geti("clickCount") == 100) {
+        if (geti("clickCount") == 100) {
             getNotificationService().setBackgroundColor(Color.SEASHELL);
             getNotificationService().pushNotification("Got achievement \"Small Fry Clicker\"!");
         }
 
         // Achievement: Big Fry Clicker
-        if(geti("clickCount") == 1000) {
+        if (geti("clickCount") == 1000) {
             getNotificationService().setBackgroundColor(Color.SEASHELL);
             getNotificationService().pushNotification("Got achievement \"Big Fry Clicker\"!");
         }
 
         // Achievement: Giga Clicker
-        if(geti("clickCount") == 10000) {
+        if (geti("clickCount") == 10000) {
             getNotificationService().setBackgroundColor(Color.SEASHELL);
             getNotificationService().pushNotification("Got achievement \"Giga Clicker\"!");
         }
 
         // Achievement: Sigma Clicker
-        if(geti("clickCount") == 100000) {
+        if (geti("clickCount") == 100000) {
             getNotificationService().setBackgroundColor(Color.SEASHELL);
             getNotificationService().pushNotification("Got achievement \"Sigma Clicker\"!");
         }
 
         // Achievement: Ultimate Clicker
-        if(geti("clickCount") == 1000000) {
+        if (geti("clickCount") == 1000000) {
             getNotificationService().setBackgroundColor(Color.SEASHELL);
             getNotificationService().pushNotification("Got achievement \"Ultimate Clicker\"!");
         }
 
         // Achievement: Clicker G.O.A.T.
-        if(geti("clickCount") == 10000000) {
+        if (geti("clickCount") == 10000000) {
             getNotificationService().setBackgroundColor(Color.SEASHELL);
             getNotificationService().pushNotification("Got achievement \"Clicker G.O.A.T.\"!");
         }
