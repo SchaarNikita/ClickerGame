@@ -41,6 +41,8 @@ public class Game extends GameApplication {
     Entity cookie;
     Entity shop;
 
+    Entity buyWorker;
+
     /**
      * Types of entities in this game.
      */
@@ -85,8 +87,8 @@ public class Game extends GameApplication {
                 var bundle = new Bundle("gameData");
 
                 // store some data
-                long cookieAmount = Cookie.amount;
-                bundle.put("cookieAmount", cookieAmount);
+                bundle.put("cookieAmount", Cookie.amount);
+                bundle.put("upgrades", Cookie.upgrades);
 
                 // give the bundle to data file
                 data.putBundle(bundle);
@@ -99,6 +101,7 @@ public class Game extends GameApplication {
 
                 // retrieve some data and update your game with saved data
                 Cookie.amount = bundle.get("cookieAmount");
+                Cookie.upgrades = bundle.get("upgrades");
             }
         });
     }
@@ -116,8 +119,10 @@ public class Game extends GameApplication {
         onKeyDown(KeyCode.E, "Shop", () -> {
             if(shop.isVisible()) {
                 shop.setVisible(false);
+                buyWorker.setVisible(false);
             } else {
                 shop.setVisible(true);
+                buyWorker.setVisible(true);
             }
         });
     }
@@ -126,8 +131,9 @@ public class Game extends GameApplication {
     protected void initGame() {
         getGameScene().setBackgroundRepeat("background.png");
         spawnCookie();
-        spawnShop();
-        //run(() -> anyMethod(), Duration.seconds(1));
+        initShop();
+
+        run(Cookie::handlePassiveCookies, Duration.seconds(1));
     }
 
     @Override
@@ -186,13 +192,22 @@ public class Game extends GameApplication {
                 .buildAndAttach();
     }
 
-    private void spawnShop() {
+    private void initShop() {
         shop = entityBuilder()
                 .type(Type.SHOP)
                 .at(getAppWidth()/2-350, getAppHeight()/2-350)
                 .view("shop.png")
                 .buildAndAttach();
         shop.setVisible(false);
+
+        buyWorker = entityBuilder()
+                .at(getAppWidth()/2-300, getAppHeight()/2-300)
+                .view("buyworker.png")
+                .onClick(entity -> {
+                    Shop.handleBuyWorker();
+                })
+                .buildAndAttach();
+        buyWorker.setVisible(false);
     }
 
     public void handleClickAchievements() {

@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Baker extends GrandmaUpgrade {
-    public Baker(double multiplier, String description, int level) {
-        this.multiplier = multiplier;
-        this.description = description;
-        this.level = level;
+    public Baker() {
+        this.multiplier = 2;
+        this.description = "A Baker";
+        this.level = 0;
     }
 
     @Override

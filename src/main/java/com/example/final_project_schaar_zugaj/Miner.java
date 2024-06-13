@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Miner extends GrandmaUpgrade {
-    public Miner(double multiplier, String description, int level) {
-        this.multiplier = multiplier;
-        this.description = description;
-        this.level = level;
+    public Miner() {
+        this.multiplier = 1.5;
+        this.description = "A Miner";
+        this.level = 0;
     }
 
     @Override
