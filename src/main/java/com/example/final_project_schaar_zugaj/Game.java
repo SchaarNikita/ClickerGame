@@ -39,12 +39,13 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 public class Game extends GameApplication {
     Text cookieAmount;
     Entity cookie;
+    Entity shop;
 
     /**
      * Types of entities in this game.
      */
     public enum Type {
-        COOKIE, POINTER, PLUSONE
+        COOKIE, POINTER, PLUSONE, SHOP
     }
 
     @Override
@@ -111,11 +112,21 @@ public class Game extends GameApplication {
         onKeyDown(KeyCode.L, "Load", () -> {
             getSaveLoadService().readAndLoadTask("save1.sav").run();
         });
+
+        onKeyDown(KeyCode.E, "Shop", () -> {
+            if(shop.isVisible()) {
+                shop.setVisible(false);
+            } else {
+                shop.setVisible(true);
+            }
+        });
     }
 
     @Override
     protected void initGame() {
+        getGameScene().setBackgroundRepeat("background.png");
         spawnCookie();
+        spawnShop();
         //run(() -> anyMethod(), Duration.seconds(1));
     }
 
@@ -149,8 +160,7 @@ public class Game extends GameApplication {
         cookie = entityBuilder()
                 .type(Type.COOKIE)
                 .at(getAppWidth() / 2 - 200, getAppHeight() / 2 - 200)
-                .viewWithBBox("Cookie_test.png")
-                //.with(new AnimationComponent())
+                .viewWithBBox("cookie.png")
                 .onClick(entity -> {
                     animationBuilder()
                             .translate(cookie)
@@ -174,6 +184,15 @@ public class Game extends GameApplication {
                 .collidable()
                 .with(new OffscreenCleanComponent())
                 .buildAndAttach();
+    }
+
+    private void spawnShop() {
+        shop = entityBuilder()
+                .type(Type.SHOP)
+                .at(getAppWidth()/2-350, getAppHeight()/2-350)
+                .view("shop.png")
+                .buildAndAttach();
+        shop.setVisible(false);
     }
 
     public void handleClickAchievements() {
