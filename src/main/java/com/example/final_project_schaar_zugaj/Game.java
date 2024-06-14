@@ -7,22 +7,16 @@
 package com.example.final_project_schaar_zugaj;
 
 import com.almasb.fxgl.achievement.Achievement;
-import com.almasb.fxgl.achievement.AchievementService;
 import com.almasb.fxgl.app.*;
 import com.almasb.fxgl.app.MenuItem;
 import com.almasb.fxgl.core.math.FXGLMath;
 import com.almasb.fxgl.core.serialization.Bundle;
-import com.almasb.fxgl.cutscene.Cutscene;
+import com.almasb.fxgl.dsl.EntityBuilder;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.dsl.components.OffscreenCleanComponent;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.profile.DataFile;
 import com.almasb.fxgl.profile.SaveLoadHandler;
-import com.almasb.fxgl.texture.Texture;
-import com.almasb.fxgl.ui.property.BooleanPropertyView;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.value.ObservableBooleanValue;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -30,7 +24,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-import java.awt.*;
 import java.util.*;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
@@ -43,11 +36,13 @@ public class Game extends GameApplication {
 
     Entity buyWorker;
 
+    Entity upgradebar;
+
     /**
      * Types of entities in this game.
      */
     public enum Type {
-        COOKIE, POINTER, PLUSONE, SHOP
+        COOKIE, POINTER, PLUSONE, SHOP, UPGRADEBAR
     }
 
     @Override
@@ -118,9 +113,11 @@ public class Game extends GameApplication {
             if(shop.isVisible()) {
                 shop.setVisible(false);
                 buyWorker.setVisible(false);
+                upgradebar.setVisible(false);
             } else {
                 shop.setVisible(true);
                 buyWorker.setVisible(true);
+                upgradebar.setVisible(true);
             }
         });
     }
@@ -130,6 +127,7 @@ public class Game extends GameApplication {
         getGameScene().setBackgroundRepeat("background.png");
         spawnCookie();
         initShop();
+        initUpgradebars();
 
         run(Cookie::handlePassiveCookies, Duration.seconds(1));
         run(this::handlePassiveAchievements, Duration.seconds(1));
@@ -261,6 +259,14 @@ public class Game extends GameApplication {
 
     public void handlePassiveAchievements() {
         System.out.println("passive");
+    }
+    private void initUpgradebars(){
+        upgradebar = entityBuilder()
+                .type(Type.UPGRADEBAR)
+                .at(getAppWidth()/2-400, getAppHeight()/2+250)
+                .view("Upgradebar.png")
+                .buildAndAttach();
+        upgradebar.setVisible(false);
     }
 
     public static void main(String[] args) {
