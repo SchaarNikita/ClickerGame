@@ -31,6 +31,7 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 // NOTE: this import above is crucial, it pulls in many useful methods
 public class Game extends GameApplication {
     Text cookieAmount;
+    Text workerData;
     Entity cookie;
     Entity shop;
 
@@ -42,7 +43,7 @@ public class Game extends GameApplication {
      * Types of entities in this game.
      */
     public enum Type {
-        COOKIE, POINTER, PLUSONE, SHOP, UPGRADEBAR
+        COOKIE, PLUSONE, SHOP, UPGRADEBAR
     }
 
     @Override
@@ -114,10 +115,12 @@ public class Game extends GameApplication {
                 shop.setVisible(false);
                 buyWorker.setVisible(false);
                 upgradebar.setVisible(false);
+                workerData.setVisible(false);
             } else {
                 shop.setVisible(true);
                 buyWorker.setVisible(true);
                 upgradebar.setVisible(true);
+                workerData.setVisible(true);
             }
         });
     }
@@ -127,7 +130,6 @@ public class Game extends GameApplication {
         getGameScene().setBackgroundRepeat("background.png");
         spawnCookie();
         initShop();
-        initUpgradebars();
 
         run(Cookie::handlePassiveCookies, Duration.seconds(1));
         run(this::handlePassiveAchievements, Duration.seconds(1));
@@ -141,7 +143,6 @@ public class Game extends GameApplication {
 
     @Override
     protected void initUI() {
-        // Cookie Amount Label
         cookieAmount = new Text();
         cookieAmount.setTranslateX(15);
         cookieAmount.setTranslateY(40);
@@ -149,7 +150,16 @@ public class Game extends GameApplication {
 
         cookieAmount.textProperty().set(Cookie.amount + "");
 
-        getGameScene().addUINode(cookieAmount); // add to the scene graph
+        workerData = new Text();
+        workerData.setTranslateX(getAppWidth()/2-115);
+        workerData.setTranslateY(getAppHeight()/2-250);
+        workerData.fontProperty().set(Font.font("Verdana", 30));
+
+        workerData.textProperty().set("LVL: " + Shop.worker.getLevel() + " - Price: " + Math.round(100 * Math.exp(Shop.worker.getLevel())));
+        workerData.setVisible(false);
+
+        getGameScene().addUINode(cookieAmount);
+        getGameScene().addUINode(workerData);
     }
 
     @Override
@@ -198,13 +208,25 @@ public class Game extends GameApplication {
         shop.setVisible(false);
 
         buyWorker = entityBuilder()
-                .at(getAppWidth()/2-300, getAppHeight()/2-300)
+                .at(getAppWidth()/2-325, getAppHeight()/2-300)
                 .view("buyworker.png")
                 .onClick(entity -> {
                     Shop.handleBuyWorker();
+                    if(Shop.worker.getLevel() == 10) {
+                        workerData.textProperty().set("LVL: MAX");
+                    } else {
+                        workerData.textProperty().set("LVL: " + Shop.worker.getLevel() + " - Price: " + Math.round(100 * Math.exp(Shop.worker.getLevel())));
+                    }
                 })
                 .buildAndAttach();
         buyWorker.setVisible(false);
+
+        upgradebar = entityBuilder()
+                .type(Type.UPGRADEBAR)
+                .at(getAppWidth()/2-350, getAppHeight()/2+250)
+                .view("Upgradebar.png")
+                .buildAndAttach();
+        upgradebar.setVisible(false);
     }
 
     public void handleClickAchievements() {
@@ -259,14 +281,6 @@ public class Game extends GameApplication {
 
     public void handlePassiveAchievements() {
         System.out.println("passive");
-    }
-    private void initUpgradebars(){
-        upgradebar = entityBuilder()
-                .type(Type.UPGRADEBAR)
-                .at(getAppWidth()/2-400, getAppHeight()/2+250)
-                .view("Upgradebar.png")
-                .buildAndAttach();
-        upgradebar.setVisible(false);
     }
 
     public static void main(String[] args) {
