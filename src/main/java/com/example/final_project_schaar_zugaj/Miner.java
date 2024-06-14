@@ -5,9 +5,10 @@ import java.util.Map;
 
 public class Miner extends GrandmaUpgrade {
     public Miner() {
-        this.multiplier = 1.5;
+        this.multiplier = 0;
         this.description = "A Miner";
         this.level = 0;
+        multiplierPerLevel();
     }
 
     @Override

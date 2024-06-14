@@ -88,7 +88,6 @@ public class Game extends GameApplication {
 
                 // store some data
                 bundle.put("cookieAmount", Cookie.amount);
-                bundle.put("upgrades", Cookie.upgrades);
 
                 // give the bundle to data file
                 data.putBundle(bundle);
@@ -101,7 +100,6 @@ public class Game extends GameApplication {
 
                 // retrieve some data and update your game with saved data
                 Cookie.amount = bundle.get("cookieAmount");
-                Cookie.upgrades = bundle.get("upgrades");
             }
         });
     }
@@ -134,6 +132,7 @@ public class Game extends GameApplication {
         initShop();
 
         run(Cookie::handlePassiveCookies, Duration.seconds(1));
+        run(this::handlePassiveAchievements, Duration.seconds(1));
     }
 
     @Override
@@ -261,7 +260,7 @@ public class Game extends GameApplication {
     }
 
     public void handlePassiveAchievements() {
-        // achievements got through passive means will be checked for here
+        System.out.println("passive");
     }
 
     public static void main(String[] args) {

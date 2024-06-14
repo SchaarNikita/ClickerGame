@@ -5,9 +5,10 @@ import java.util.Map;
 
 public class Farmer extends GrandmaUpgrade {
     public Farmer() {
-        this.multiplier = 1.25;
+        this.multiplier = 0;
         this.description = "A Farmer";
         this.level = 0;
+        multiplierPerLevel();
     }
 
     @Override

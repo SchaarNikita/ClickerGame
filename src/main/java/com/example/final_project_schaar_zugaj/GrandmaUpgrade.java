@@ -17,6 +17,11 @@ public abstract class GrandmaUpgrade {
 
     }
 
+    public void levelUp() {
+        level += 1;
+        multiplier = levelMultiplier.get(level);
+    }
+
     public double getMultiplier() {
         return multiplier = levelMultiplier.get(level);
     }
