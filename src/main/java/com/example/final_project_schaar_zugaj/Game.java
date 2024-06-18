@@ -37,13 +37,11 @@ public class Game extends GameApplication {
 
     Entity buyWorker;
 
-    Entity upgradebar;
-
     /**
      * Types of entities in this game.
      */
     public enum Type {
-        COOKIE, PLUSONE, SHOP, UPGRADEBAR
+        COOKIE, PLUSONE, SHOP
     }
 
     @Override
@@ -114,12 +112,10 @@ public class Game extends GameApplication {
             if(shop.isVisible()) {
                 shop.setVisible(false);
                 buyWorker.setVisible(false);
-                upgradebar.setVisible(false);
                 workerData.setVisible(false);
             } else {
                 shop.setVisible(true);
                 buyWorker.setVisible(true);
-                upgradebar.setVisible(true);
                 workerData.setVisible(true);
             }
         });
@@ -220,13 +216,6 @@ public class Game extends GameApplication {
                 })
                 .buildAndAttach();
         buyWorker.setVisible(false);
-
-        upgradebar = entityBuilder()
-                .type(Type.UPGRADEBAR)
-                .at(getAppWidth()/2-350, getAppHeight()/2+250)
-                .view("Upgradebar.png")
-                .buildAndAttach();
-        upgradebar.setVisible(false);
     }
 
     public void handleClickAchievements() {
