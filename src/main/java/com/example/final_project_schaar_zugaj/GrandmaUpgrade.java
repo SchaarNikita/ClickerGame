@@ -8,22 +8,8 @@ public abstract class GrandmaUpgrade {
     String description;
     int level;
 
-    Map<Integer, Double> levelMultiplier = new HashMap<>();
-
-    public void multiplierPerLevel() {
-        for (int i = 1; i <= 10; i++) {
-            levelMultiplier.put(i, 1.05);
-        }
-
-    }
-
     public void levelUp() {
         level += 1;
-        multiplier = levelMultiplier.get(level);
-    }
-
-    public double getMultiplier() {
-        return multiplier = levelMultiplier.get(level);
     }
 
     public String getDescription() {

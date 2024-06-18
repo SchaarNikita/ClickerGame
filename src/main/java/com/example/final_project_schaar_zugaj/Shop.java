@@ -14,4 +14,11 @@ public class Shop {
             worker.levelUp();
         }
     }
+
+    public static void handleBuyFarmer() {
+        if(Cookie.amount >= Math.round(30 * Math.exp(farmer.getLevel())) && worker.getLevel() != 10) {
+            Cookie.amount -= Math.round(30 * Math.exp(farmer.getLevel()));
+            farmer.levelUp();
+        }
+    }
 }

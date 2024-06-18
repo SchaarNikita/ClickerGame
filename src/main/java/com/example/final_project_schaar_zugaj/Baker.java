@@ -5,19 +5,8 @@ import java.util.Map;
 
 public class Baker extends GrandmaUpgrade {
     public Baker() {
-        this.multiplier = 0;
+        this.multiplier = 1;
         this.description = "A Baker";
         this.level = 0;
-        multiplierPerLevel();
-    }
-
-    @Override
-    public void multiplierPerLevel() {
-        double j = 2;
-        for (int i = 1; i <= 10; i++) {
-            levelMultiplier.put(i, j);
-            j++;
-        }
-
     }
 }

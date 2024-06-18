@@ -31,11 +31,15 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 // NOTE: this import above is crucial, it pulls in many useful methods
 public class Game extends GameApplication {
     Text cookieAmount;
+    Text farmerData;
     Text workerData;
     Entity cookie;
     Entity shop;
 
+    Entity buyFarmer;
+    Entity buyMiner;
     Entity buyWorker;
+    Entity buyBaker;
 
     /**
      * Types of entities in this game.
@@ -111,11 +115,15 @@ public class Game extends GameApplication {
         onKeyDown(KeyCode.E, "Shop", () -> {
             if(shop.isVisible()) {
                 shop.setVisible(false);
+                buyFarmer.setVisible(false);
                 buyWorker.setVisible(false);
+                farmerData.setVisible(false);
                 workerData.setVisible(false);
             } else {
                 shop.setVisible(true);
+                buyFarmer.setVisible(true);
                 buyWorker.setVisible(true);
+                farmerData.setVisible(true);
                 workerData.setVisible(true);
             }
         });
@@ -146,15 +154,24 @@ public class Game extends GameApplication {
 
         cookieAmount.textProperty().set(Cookie.amount + "");
 
+        farmerData = new Text();
+        farmerData.setTranslateX(getAppWidth()/2-115);
+        farmerData.setTranslateY(getAppHeight()/2-250);
+        farmerData.fontProperty().set(Font.font("Verdana", 30));
+
+        farmerData.textProperty().set("LVL: " + Shop.farmer.getLevel() + " - Price: " + Math.round(30 * Math.exp(Shop.farmer.getLevel())));
+        farmerData.setVisible(false);
+
         workerData = new Text();
         workerData.setTranslateX(getAppWidth()/2-115);
-        workerData.setTranslateY(getAppHeight()/2-250);
+        workerData.setTranslateY(getAppHeight()/2-150);
         workerData.fontProperty().set(Font.font("Verdana", 30));
 
         workerData.textProperty().set("LVL: " + Shop.worker.getLevel() + " - Price: " + Math.round(100 * Math.exp(Shop.worker.getLevel())));
         workerData.setVisible(false);
 
         getGameScene().addUINode(cookieAmount);
+        getGameScene().addUINode(farmerData);
         getGameScene().addUINode(workerData);
     }
 
@@ -203,8 +220,22 @@ public class Game extends GameApplication {
                 .buildAndAttach();
         shop.setVisible(false);
 
-        buyWorker = entityBuilder()
+        buyFarmer = entityBuilder()
                 .at(getAppWidth()/2-325, getAppHeight()/2-300)
+                .view("buyfarmer.png")
+                .onClick(entity -> {
+                    Shop.handleBuyFarmer();
+                    if(Shop.farmer.getLevel() == 10) {
+                        farmerData.textProperty().set("LVL: MAX");
+                    } else {
+                        farmerData.textProperty().set("LVL: " + Shop.farmer.getLevel() + " - Price: " + Math.round(30 * Math.exp(Shop.farmer.getLevel())));
+                    }
+                })
+                .buildAndAttach();
+        buyFarmer.setVisible(false);
+
+        buyWorker = entityBuilder()
+                .at(getAppWidth()/2-325, getAppHeight()/2-200)
                 .view("buyworker.png")
                 .onClick(entity -> {
                     Shop.handleBuyWorker();

@@ -10,9 +10,9 @@ public class Cookie {
     }
 
     static void handlePassiveCookies() {
-        amount += Math.round(Shop.worker.multiplier) * Shop.worker.level;
-        amount += Math.round(Shop.farmer.multiplier) * Shop.farmer.level;
-        amount += Math.round(Shop.baker.multiplier) * Shop.baker.level;
-        amount += Math.round(Shop.miner.multiplier) * Shop.miner.level;
+        amount += (Math.round(1 + Shop.worker.multiplier * Shop.worker.level) * Shop.worker.level);
+        amount += (Math.round(1 + Shop.farmer.multiplier * Shop.farmer.level) * Shop.farmer.level);
+        amount += (Math.round(1 + Shop.baker.multiplier * Shop.baker.level) * Shop.baker.level);
+        amount += (Math.round(1 + Shop.miner.multiplier * Shop.miner.level) * Shop.miner.level);
     }
 }
