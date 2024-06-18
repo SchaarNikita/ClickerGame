@@ -86,6 +86,10 @@ public class Game extends GameApplication {
 
                 // store some data
                 bundle.put("cookieAmount", Cookie.amount);
+                bundle.put("farmerLevel", Shop.farmer.level);
+                bundle.put("minerLevel", Shop.miner.level);
+                bundle.put("workerLevel", Shop.worker.level);
+                bundle.put("bakerLevel", Shop.baker.level);
 
                 // give the bundle to data file
                 data.putBundle(bundle);
@@ -98,6 +102,22 @@ public class Game extends GameApplication {
 
                 // retrieve some data and update your game with saved data
                 Cookie.amount = bundle.get("cookieAmount");
+                Shop.farmer.level = bundle.get("farmerLevel");
+                Shop.miner.level = bundle.get("minerLevel");
+                Shop.worker.level = bundle.get("workerLevel");
+                Shop.baker.level = bundle.get("bakerLevel");
+
+                if(Shop.farmer.getLevel() == 10) {
+                    farmerData.textProperty().set("LVL: MAX");
+                } else {
+                    farmerData.textProperty().set("LVL: " + Shop.farmer.getLevel() + " - Price: " + Math.round(30 * Math.exp(Shop.farmer.getLevel())));
+                }
+
+                if(Shop.worker.getLevel() == 10) {
+                    workerData.textProperty().set("LVL: MAX");
+                } else {
+                    workerData.textProperty().set("LVL: " + Shop.worker.getLevel() + " - Price: " + Math.round(100 * Math.exp(Shop.worker.getLevel())));
+                }
             }
         });
     }
