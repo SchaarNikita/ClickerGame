@@ -12,6 +12,6 @@ public class Baker extends GrandmaUpgrade {
 
     @Override
     public long getPrice() {
-        return Math.round(5400 * Math.exp(this.getLevel()));
+        return Math.round(5400 * Math.exp(this.getLevel()) * (this.getLevel() + 1));
     }
 }

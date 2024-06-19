@@ -12,6 +12,6 @@ public class Miner extends GrandmaUpgrade {
 
     @Override
     public long getPrice() {
-        return Math.round(600 * Math.exp(this.getLevel()));
+        return Math.round(600 * Math.exp(this.getLevel()) * (this.getLevel() + 1));
     }
 }

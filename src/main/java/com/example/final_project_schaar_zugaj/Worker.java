@@ -12,6 +12,6 @@ public class Worker extends GrandmaUpgrade {
 
     @Override
     public long getPrice() {
-        return Math.round(1800 * Math.exp(this.getLevel()));
+        return Math.round(1800 * Math.exp(this.getLevel()) * (this.getLevel() + 1));
     }
 }

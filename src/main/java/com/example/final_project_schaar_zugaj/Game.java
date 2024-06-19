@@ -378,31 +378,37 @@ public class Game extends GameApplication {
                 // Achievement: Small Fry Clicker
                 getNotificationService().setBackgroundColor(Color.SEASHELL);
                 getNotificationService().pushNotification("Got achievement \"Small Fry Clicker\"!");
+                break;
 
             case 1000:
                 // Achievement: Big Fry Clicker
                 getNotificationService().setBackgroundColor(Color.SEASHELL);
                 getNotificationService().pushNotification("Got achievement \"Big Fry Clicker\"!");
+                break;
 
             case 10000:
                 // Achievement: Giga Clicker
                 getNotificationService().setBackgroundColor(Color.SEASHELL);
                 getNotificationService().pushNotification("Got achievement \"Giga Clicker\"!");
+                break;
 
             case 100000:
                 // Achievement: Sigma Clicker
                 getNotificationService().setBackgroundColor(Color.SEASHELL);
                 getNotificationService().pushNotification("Got achievement \"Sigma Clicker\"!");
+                break;
 
             case 1000000:
                 // Achievement: Ultimate Clicker
                 getNotificationService().setBackgroundColor(Color.SEASHELL);
                 getNotificationService().pushNotification("Got achievement \"Ultimate Clicker\"!");
+                break;
 
             case 10000000:
                 // Achievement: Clicker G.O.A.T.
                 getNotificationService().setBackgroundColor(Color.SEASHELL);
                 getNotificationService().pushNotification("Got achievement \"Clicker G.O.A.T.\"!");
+                break;
         }
     }
 

@@ -12,6 +12,6 @@ public class Farmer extends GrandmaUpgrade {
 
     @Override
     public long getPrice() {
-        return Math.round(200 * Math.exp(this.getLevel()));
+        return Math.round(200 * Math.exp(this.getLevel()) * (this.getLevel() + 1));
     }
 }
