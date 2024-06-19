@@ -171,6 +171,7 @@ public class Game extends GameApplication {
                 buyMiner.setVisible(false);
                 buyWorker.setVisible(false);
                 buyBaker.setVisible(false);
+                buyPointer.setVisible(false);
                 farmerData.setVisible(false);
                 minerData.setVisible(false);
                 workerData.setVisible(false);
@@ -181,6 +182,7 @@ public class Game extends GameApplication {
                 buyMiner.setVisible(true);
                 buyWorker.setVisible(true);
                 buyBaker.setVisible(true);
+                buyPointer.setVisible(true);
                 farmerData.setVisible(true);
                 minerData.setVisible(true);
                 workerData.setVisible(true);
@@ -358,6 +360,15 @@ public class Game extends GameApplication {
                 })
                 .buildAndAttach();
         buyBaker.setVisible(false);
+
+        buyPointer = entityBuilder()
+                .at(getAppWidth()/2-325, getAppHeight()/2+100)
+                .view("pointer.png")
+                .onClick(entity -> {
+                    Shop.handleBuyPointer();
+                })
+                .buildAndAttach();
+        buyPointer.setVisible(false);
     }
 
     public void handleAchievements() {

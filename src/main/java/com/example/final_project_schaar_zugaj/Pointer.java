@@ -8,7 +8,7 @@ public class Pointer {
     static double multiplier = 1;
     static String description = "The basic pointer.";
 
-    public void levelUp() {
+    public static void levelUp() {
         level += 1;
         multiplier = Math.pow(level, 2);
     }
