@@ -31,4 +31,8 @@ public abstract class GrandmaUpgrade {
     public void setLevel(int level) {
         this.level = level;
     }
+
+    public long getPrice() {
+        return 0;
+    }
 }

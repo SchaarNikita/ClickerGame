@@ -8,17 +8,33 @@ public class Shop {
     static Farmer farmer = new Farmer();
     static Miner miner = new Miner();
 
+    public static void handleBuyFarmer() {
+        if(Cookie.amount >= farmer.getPrice() && farmer.getLevel() != 10) {
+            Cookie.amount -= farmer.getPrice();
+            farmer.levelUp();
+        }
+    }
+
+    public static void handleBuyMiner() {
+        if(Cookie.amount >= miner.getPrice() && miner.getLevel() != 10) {
+            Cookie.amount -= miner.getPrice();
+            miner.levelUp();
+        }
+    }
+
     public static void handleBuyWorker() {
-        if(Cookie.amount >= Math.round(100 * Math.exp(worker.getLevel())) && worker.getLevel() != 10) {
-            Cookie.amount -= Math.round(100 * Math.exp(worker.getLevel()));
+        if(Cookie.amount >= worker.getPrice() && worker.getLevel() != 10) {
+            Cookie.amount -= worker.getPrice();
             worker.levelUp();
         }
     }
 
-    public static void handleBuyFarmer() {
-        if(Cookie.amount >= Math.round(30 * Math.exp(farmer.getLevel())) && farmer.getLevel() != 10) {
-            Cookie.amount -= Math.round(30 * Math.exp(farmer.getLevel()));
-            farmer.levelUp();
+    public static void handleBuyBaker() {
+        if(Cookie.amount >= baker.getPrice() && baker.getLevel() != 10) {
+            Cookie.amount -= baker.getPrice();
+            baker.levelUp();
         }
     }
+
+
 }

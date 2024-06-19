@@ -5,8 +5,13 @@ import java.util.Map;
 
 public class Baker extends GrandmaUpgrade {
     public Baker() {
-        this.multiplier = 1;
+        this.multiplier = 8;
         this.description = "A Baker";
         this.level = 0;
+    }
+
+    @Override
+    public long getPrice() {
+        return Math.round(5400 * Math.exp(this.getLevel()));
     }
 }

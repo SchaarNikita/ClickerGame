@@ -32,14 +32,19 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 public class Game extends GameApplication {
     Text cookieAmount;
     Text farmerData;
+    Text minerData;
     Text workerData;
+    Text bakerData;
+    Text pointerData;
     Entity cookie;
-    Entity shop;
 
+    // Entities for shop
+    Entity shop;
     Entity buyFarmer;
     Entity buyMiner;
     Entity buyWorker;
     Entity buyBaker;
+    Entity buyPointer;
 
     /**
      * Types of entities in this game.
@@ -66,14 +71,27 @@ public class Game extends GameApplication {
         settings.setAppIcon("cookie.png");
         settings.setDefaultCursor(new CursorInfo("pointer.png", 33, 17));
 
-        // Adding all achievements + their goals to the game
-        settings.getAchievements().add(new Achievement("Be Lucky", "Click the cookie, maybe you'll get it...", "luckyCondition", true));
-        settings.getAchievements().add(new Achievement("Small Fry Clicker", "Click the cookie 100 times", "clickCount", 100));
-        settings.getAchievements().add(new Achievement("Big Fry Clicker", "Click the cookie 1000 times", "clickCount", 1000));
-        settings.getAchievements().add(new Achievement("Giga Clicker", "Click the cookie 10000 times", "clickCount", 10000));
-        settings.getAchievements().add(new Achievement("Sigma Clicker", "Click the cookie 100000 times", "clickCount", 100000));
-        settings.getAchievements().add(new Achievement("Ultimate Clicker", "Click the cookie 1000000 times", "clickCount", 1000000));
-        settings.getAchievements().add(new Achievement("Clicker G.O.A.T.", "Click the cookie 10000000 times", "clickCount", 10000000));
+        // Adding all active (bound to onClick events) achievements + their goals to the game
+        settings.getAchievements().addAll(Arrays.asList(
+                new Achievement("Be Lucky", "Click the cookie, maybe you'll get it...", "luckyCondition", true),
+                new Achievement("Small Fry Clicker", "Click the cookie 100 times", "clickCount", 100),
+                new Achievement("Big Fry Clicker", "Click the cookie 1000 times", "clickCount", 1000),
+                new Achievement("Giga Clicker", "Click the cookie 10000 times", "clickCount", 10000),
+                new Achievement("Sigma Clicker", "Click the cookie 100000 times", "clickCount", 100000),
+                new Achievement("Ultimate Clicker", "Click the cookie 1000000 times", "clickCount", 1000000),
+                new Achievement("Clicker G.O.A.T.", "Click the cookie 10000000 times", "clickCount", 10000000)
+        ));
+
+        // Adding all passive (bound to cookieAmount) achievements + goals
+        settings.getAchievements().addAll(Arrays.asList(
+                new Achievement("Cookie Crook", "Get 1000 cookies", "cookieAmount", 1000),
+                new Achievement("Cookie Pookie", "Get 10000 cookies", "cookieAmount", 10000),
+                new Achievement("Cookie Lord", "Get 100000 cookies", "cookieAmount", 100000),
+                new Achievement("Cookie Prince", "Get 1000000 cookies", "cookieAmount", 1000000),
+                new Achievement("Cookie King", "Get 10000000 cookies", "cookieAmount", 10000000),
+                new Achievement("Cookie Emperor", "Get 100000000 cookies", "cookieAmount", 100000000),
+                new Achievement("Cookie God", "Get 1000000000 cookies", "cookieAmount", 1000000000)
+        ));
     }
 
     @Override
@@ -86,6 +104,7 @@ public class Game extends GameApplication {
 
                 // store some data
                 bundle.put("cookieAmount", Cookie.amount);
+                bundle.put("clickCount", geti("clickCount"));
                 bundle.put("farmerLevel", Shop.farmer.level);
                 bundle.put("minerLevel", Shop.miner.level);
                 bundle.put("workerLevel", Shop.worker.level);
@@ -102,6 +121,7 @@ public class Game extends GameApplication {
 
                 // retrieve some data and update your game with saved data
                 Cookie.amount = bundle.get("cookieAmount");
+                set("clickCount", bundle.get("clickCount"));
                 Shop.farmer.level = bundle.get("farmerLevel");
                 Shop.miner.level = bundle.get("minerLevel");
                 Shop.worker.level = bundle.get("workerLevel");
@@ -110,13 +130,25 @@ public class Game extends GameApplication {
                 if(Shop.farmer.getLevel() == 10) {
                     farmerData.textProperty().set("LVL: MAX");
                 } else {
-                    farmerData.textProperty().set("LVL: " + Shop.farmer.getLevel() + " - Price: " + Math.round(30 * Math.exp(Shop.farmer.getLevel())));
+                    farmerData.textProperty().set("LVL: " + Shop.farmer.getLevel() + " - Price: " + Shop.farmer.getPrice());
+                }
+
+                if(Shop.miner.getLevel() == 10) {
+                    minerData.textProperty().set("LVL: MAX");
+                } else {
+                    minerData.textProperty().set("LVL: " + Shop.miner.getLevel() + " - Price: " + Shop.miner.getPrice());
                 }
 
                 if(Shop.worker.getLevel() == 10) {
                     workerData.textProperty().set("LVL: MAX");
                 } else {
-                    workerData.textProperty().set("LVL: " + Shop.worker.getLevel() + " - Price: " + Math.round(100 * Math.exp(Shop.worker.getLevel())));
+                    workerData.textProperty().set("LVL: " + Shop.worker.getLevel() + " - Price: " + Shop.worker.getPrice());
+                }
+
+                if(Shop.baker.getLevel() == 10) {
+                    bakerData.textProperty().set("LVL: MAX");
+                } else {
+                    bakerData.textProperty().set("LVL: " + Shop.baker.getLevel() + " - Price: " + Shop.baker.getPrice());
                 }
             }
         });
@@ -136,15 +168,23 @@ public class Game extends GameApplication {
             if(shop.isVisible()) {
                 shop.setVisible(false);
                 buyFarmer.setVisible(false);
+                buyMiner.setVisible(false);
                 buyWorker.setVisible(false);
+                buyBaker.setVisible(false);
                 farmerData.setVisible(false);
+                minerData.setVisible(false);
                 workerData.setVisible(false);
+                bakerData.setVisible(false);
             } else {
                 shop.setVisible(true);
                 buyFarmer.setVisible(true);
+                buyMiner.setVisible(true);
                 buyWorker.setVisible(true);
+                buyBaker.setVisible(true);
                 farmerData.setVisible(true);
+                minerData.setVisible(true);
                 workerData.setVisible(true);
+                bakerData.setVisible(true);
             }
         });
     }
@@ -156,13 +196,13 @@ public class Game extends GameApplication {
         initShop();
 
         run(Cookie::handlePassiveCookies, Duration.seconds(1));
-        run(this::handlePassiveAchievements, Duration.seconds(1));
     }
 
     @Override
     protected void initGameVars(Map<String, Object> vars) {
         vars.put("luckyCondition", false);
         vars.put("clickCount", 0);
+        vars.put("cookieAmount", Cookie.amount);
     }
 
     @Override
@@ -179,26 +219,49 @@ public class Game extends GameApplication {
         farmerData.setTranslateY(getAppHeight()/2-250);
         farmerData.fontProperty().set(Font.font("Verdana", 30));
 
-        farmerData.textProperty().set("LVL: " + Shop.farmer.getLevel() + " - Price: " + Math.round(30 * Math.exp(Shop.farmer.getLevel())));
+        farmerData.textProperty().set("LVL: " + Shop.farmer.getLevel() + " - Price: " + Shop.farmer.getPrice());
         farmerData.setVisible(false);
+
+        minerData = new Text();
+        minerData.setTranslateX(getAppWidth()/2-115);
+        minerData.setTranslateY(getAppHeight()/2-150);
+        minerData.fontProperty().set(Font.font("Verdana", 30));
+
+        minerData.textProperty().set("LVL: " + Shop.miner.getLevel() + " - Price: " + Shop.miner.getPrice());
+        minerData.setVisible(false);
 
         workerData = new Text();
         workerData.setTranslateX(getAppWidth()/2-115);
-        workerData.setTranslateY(getAppHeight()/2-150);
+        workerData.setTranslateY(getAppHeight()/2-50);
         workerData.fontProperty().set(Font.font("Verdana", 30));
 
-        workerData.textProperty().set("LVL: " + Shop.worker.getLevel() + " - Price: " + Math.round(100 * Math.exp(Shop.worker.getLevel())));
+        workerData.textProperty().set("LVL: " + Shop.worker.getLevel() + " - Price: " + Shop.worker.getPrice());
         workerData.setVisible(false);
+
+        bakerData = new Text();
+        bakerData.setTranslateX(getAppWidth()/2-115);
+        bakerData.setTranslateY(getAppHeight()/2+50);
+        bakerData.fontProperty().set(Font.font("Verdana", 30));
+
+        bakerData.textProperty().set("LVL: " + Shop.baker.getLevel() + " - Price: " + Shop.baker.getPrice());
+        bakerData.setVisible(false);
 
         getGameScene().addUINode(cookieAmount);
         getGameScene().addUINode(farmerData);
+        getGameScene().addUINode(minerData);
         getGameScene().addUINode(workerData);
+        getGameScene().addUINode(bakerData);
     }
 
     @Override
     protected void onUpdate(double tpf) {
+        // Updating textProperty of cookie count
         cookieAmount.textProperty().set(Cookie.amount + "");
 
+        // Updating cookie amount game variable for achievements
+        set("cookieAmount", Cookie.amount);
+
+        // moving every +1 particle upwards on the screen
         getGameWorld().getEntitiesByType(Type.PLUSONE).forEach(plusOne -> plusOne.translateY(-600 * tpf));
     }
 
@@ -217,7 +280,7 @@ public class Game extends GameApplication {
                             .buildAndPlay();
                     Cookie.handleOnClick();
                     spawnPlusOne();
-                    handleClickAchievements();
+                    handleAchievements();
                 })
                 .buildAndAttach();
     }
@@ -248,28 +311,56 @@ public class Game extends GameApplication {
                     if(Shop.farmer.getLevel() == 10) {
                         farmerData.textProperty().set("LVL: MAX");
                     } else {
-                        farmerData.textProperty().set("LVL: " + Shop.farmer.getLevel() + " - Price: " + Math.round(30 * Math.exp(Shop.farmer.getLevel())));
+                        farmerData.textProperty().set("LVL: " + Shop.farmer.getLevel() + " - Price: " + Shop.farmer.getPrice());
                     }
                 })
                 .buildAndAttach();
         buyFarmer.setVisible(false);
 
-        buyWorker = entityBuilder()
+        buyMiner = entityBuilder()
                 .at(getAppWidth()/2-325, getAppHeight()/2-200)
+                .view("buyminer.png")
+                .onClick(entity -> {
+                    Shop.handleBuyMiner();
+                    if(Shop.miner.getLevel() == 10) {
+                        minerData.textProperty().set("LVL: MAX");
+                    } else {
+                        minerData.textProperty().set("LVL: " + Shop.miner.getLevel() + " - Price: " + Shop.miner.getPrice());
+                    }
+                })
+                .buildAndAttach();
+        buyMiner.setVisible(false);
+
+        buyWorker = entityBuilder()
+                .at(getAppWidth()/2-325, getAppHeight()/2-100)
                 .view("buyworker.png")
                 .onClick(entity -> {
                     Shop.handleBuyWorker();
                     if(Shop.worker.getLevel() == 10) {
                         workerData.textProperty().set("LVL: MAX");
                     } else {
-                        workerData.textProperty().set("LVL: " + Shop.worker.getLevel() + " - Price: " + Math.round(100 * Math.exp(Shop.worker.getLevel())));
+                        workerData.textProperty().set("LVL: " + Shop.worker.getLevel() + " - Price: " + Shop.worker.getPrice());
                     }
                 })
                 .buildAndAttach();
         buyWorker.setVisible(false);
+
+        buyBaker = entityBuilder()
+                .at(getAppWidth()/2-325, getAppHeight()/2)
+                .view("buybaker.png")
+                .onClick(entity -> {
+                    Shop.handleBuyBaker();
+                    if(Shop.baker.getLevel() == 10) {
+                        bakerData.textProperty().set("LVL: MAX");
+                    } else {
+                        bakerData.textProperty().set("LVL: " + Shop.baker.getLevel() + " - Price: " + Shop.baker.getPrice());
+                    }
+                })
+                .buildAndAttach();
+        buyBaker.setVisible(false);
     }
 
-    public void handleClickAchievements() {
+    public void handleAchievements() {
         // update clickCount
         set("clickCount", geti("clickCount") + 1);
 
@@ -282,45 +373,37 @@ public class Game extends GameApplication {
             }
         }
 
-        // Achievement: Small Fry Clicker
-        if (geti("clickCount") == 100) {
-            getNotificationService().setBackgroundColor(Color.SEASHELL);
-            getNotificationService().pushNotification("Got achievement \"Small Fry Clicker\"!");
-        }
+        switch (geti("clickCount")) {
+            case 100:
+                // Achievement: Small Fry Clicker
+                getNotificationService().setBackgroundColor(Color.SEASHELL);
+                getNotificationService().pushNotification("Got achievement \"Small Fry Clicker\"!");
 
-        // Achievement: Big Fry Clicker
-        if (geti("clickCount") == 1000) {
-            getNotificationService().setBackgroundColor(Color.SEASHELL);
-            getNotificationService().pushNotification("Got achievement \"Big Fry Clicker\"!");
-        }
+            case 1000:
+                // Achievement: Big Fry Clicker
+                getNotificationService().setBackgroundColor(Color.SEASHELL);
+                getNotificationService().pushNotification("Got achievement \"Big Fry Clicker\"!");
 
-        // Achievement: Giga Clicker
-        if (geti("clickCount") == 10000) {
-            getNotificationService().setBackgroundColor(Color.SEASHELL);
-            getNotificationService().pushNotification("Got achievement \"Giga Clicker\"!");
-        }
+            case 10000:
+                // Achievement: Giga Clicker
+                getNotificationService().setBackgroundColor(Color.SEASHELL);
+                getNotificationService().pushNotification("Got achievement \"Giga Clicker\"!");
 
-        // Achievement: Sigma Clicker
-        if (geti("clickCount") == 100000) {
-            getNotificationService().setBackgroundColor(Color.SEASHELL);
-            getNotificationService().pushNotification("Got achievement \"Sigma Clicker\"!");
-        }
+            case 100000:
+                // Achievement: Sigma Clicker
+                getNotificationService().setBackgroundColor(Color.SEASHELL);
+                getNotificationService().pushNotification("Got achievement \"Sigma Clicker\"!");
 
-        // Achievement: Ultimate Clicker
-        if (geti("clickCount") == 1000000) {
-            getNotificationService().setBackgroundColor(Color.SEASHELL);
-            getNotificationService().pushNotification("Got achievement \"Ultimate Clicker\"!");
-        }
+            case 1000000:
+                // Achievement: Ultimate Clicker
+                getNotificationService().setBackgroundColor(Color.SEASHELL);
+                getNotificationService().pushNotification("Got achievement \"Ultimate Clicker\"!");
 
-        // Achievement: Clicker G.O.A.T.
-        if (geti("clickCount") == 10000000) {
-            getNotificationService().setBackgroundColor(Color.SEASHELL);
-            getNotificationService().pushNotification("Got achievement \"Clicker G.O.A.T.\"!");
+            case 10000000:
+                // Achievement: Clicker G.O.A.T.
+                getNotificationService().setBackgroundColor(Color.SEASHELL);
+                getNotificationService().pushNotification("Got achievement \"Clicker G.O.A.T.\"!");
         }
-    }
-
-    public void handlePassiveAchievements() {
-        System.out.println("passive");
     }
 
     public static void main(String[] args) {
