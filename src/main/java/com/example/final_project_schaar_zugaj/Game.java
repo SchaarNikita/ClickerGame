@@ -62,8 +62,9 @@ public class Game extends GameApplication {
         settings.setGameMenuEnabled(true);
         settings.setFullScreenAllowed(false);
         settings.setTitle("Clicker Game");
+        settings.setVersion("1.0");
         settings.setEnabledMenuItems(EnumSet.of(MenuItem.EXTRA));
-        settings.setApplicationMode(ApplicationMode.DEVELOPER);
+        settings.setApplicationMode(ApplicationMode.RELEASE);
         settings.getCredits().addAll(Arrays.asList(
                 "Nikita Schaar - Programmer, Designer, Planning",
                 "Moritz Zugaj - Programmer, Designer, Planning"
@@ -414,7 +415,7 @@ public class Game extends GameApplication {
 
         // Achievement: Be Lucky
         if (!getb("luckyCondition")) {
-            if (random(0, 50000) == 12345) {
+            if (random(0, 100000) == 12345) {
                 FXGL.set("luckyCondition", true);
                 getNotificationService().setBackgroundColor(Color.SEASHELL);
                 getNotificationService().pushNotification("Got achievement \"Be Lucky\"!");
