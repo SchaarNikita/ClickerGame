@@ -50,7 +50,7 @@ public class Game extends GameApplication {
      * Types of entities in this game.
      */
     public enum Type {
-        COOKIE, PLUSONE, SHOP
+        COOKIE, PLUSNUMBER, SHOP
     }
 
     @Override
@@ -109,6 +109,7 @@ public class Game extends GameApplication {
                 bundle.put("minerLevel", Shop.miner.level);
                 bundle.put("workerLevel", Shop.worker.level);
                 bundle.put("bakerLevel", Shop.baker.level);
+                bundle.put("pointerLevel", Pointer.level);
 
                 // give the bundle to data file
                 data.putBundle(bundle);
@@ -126,6 +127,7 @@ public class Game extends GameApplication {
                 Shop.miner.level = bundle.get("minerLevel");
                 Shop.worker.level = bundle.get("workerLevel");
                 Shop.baker.level = bundle.get("bakerLevel");
+                Pointer.level = bundle.get("pointerLevel");
 
                 if(Shop.farmer.getLevel() == 10) {
                     farmerData.textProperty().set("LVL: MAX");
@@ -176,6 +178,7 @@ public class Game extends GameApplication {
                 minerData.setVisible(false);
                 workerData.setVisible(false);
                 bakerData.setVisible(false);
+                pointerData.setVisible(false);
             } else {
                 shop.setVisible(true);
                 buyFarmer.setVisible(true);
@@ -187,6 +190,7 @@ public class Game extends GameApplication {
                 minerData.setVisible(true);
                 workerData.setVisible(true);
                 bakerData.setVisible(true);
+                pointerData.setVisible(true);
             }
         });
     }
@@ -218,7 +222,7 @@ public class Game extends GameApplication {
 
         farmerData = new Text();
         farmerData.setTranslateX(getAppWidth()/2-115);
-        farmerData.setTranslateY(getAppHeight()/2-250);
+        farmerData.setTranslateY(getAppHeight()/2-170);
         farmerData.fontProperty().set(Font.font("Verdana", 30));
 
         farmerData.textProperty().set("LVL: " + Shop.farmer.getLevel() + " - Price: " + Shop.farmer.getPrice());
@@ -226,7 +230,7 @@ public class Game extends GameApplication {
 
         minerData = new Text();
         minerData.setTranslateX(getAppWidth()/2-115);
-        minerData.setTranslateY(getAppHeight()/2-150);
+        minerData.setTranslateY(getAppHeight()/2-70);
         minerData.fontProperty().set(Font.font("Verdana", 30));
 
         minerData.textProperty().set("LVL: " + Shop.miner.getLevel() + " - Price: " + Shop.miner.getPrice());
@@ -234,7 +238,7 @@ public class Game extends GameApplication {
 
         workerData = new Text();
         workerData.setTranslateX(getAppWidth()/2-115);
-        workerData.setTranslateY(getAppHeight()/2-50);
+        workerData.setTranslateY(getAppHeight()/2+20);
         workerData.fontProperty().set(Font.font("Verdana", 30));
 
         workerData.textProperty().set("LVL: " + Shop.worker.getLevel() + " - Price: " + Shop.worker.getPrice());
@@ -242,17 +246,26 @@ public class Game extends GameApplication {
 
         bakerData = new Text();
         bakerData.setTranslateX(getAppWidth()/2-115);
-        bakerData.setTranslateY(getAppHeight()/2+50);
+        bakerData.setTranslateY(getAppHeight()/2+120);
         bakerData.fontProperty().set(Font.font("Verdana", 30));
 
         bakerData.textProperty().set("LVL: " + Shop.baker.getLevel() + " - Price: " + Shop.baker.getPrice());
         bakerData.setVisible(false);
+
+        pointerData = new Text();
+        pointerData.setTranslateX(getAppWidth()/2-115);
+        pointerData.setTranslateY(getAppHeight()/2+240);
+        pointerData.fontProperty().set(Font.font("Verdana", 30));
+
+        pointerData.textProperty().set("LVL: " + Pointer.level + " - Price: " + Pointer.levelPrice[Pointer.level-1]);
+        pointerData.setVisible(false);
 
         getGameScene().addUINode(cookieAmount);
         getGameScene().addUINode(farmerData);
         getGameScene().addUINode(minerData);
         getGameScene().addUINode(workerData);
         getGameScene().addUINode(bakerData);
+        getGameScene().addUINode(pointerData);
     }
 
     @Override
@@ -264,7 +277,7 @@ public class Game extends GameApplication {
         set("cookieAmount", Cookie.amount);
 
         // moving every +1 particle upwards on the screen
-        getGameWorld().getEntitiesByType(Type.PLUSONE).forEach(plusOne -> plusOne.translateY(-600 * tpf));
+        getGameWorld().getEntitiesByType(Type.PLUSNUMBER).forEach(plusOne -> plusOne.translateY(-600 * tpf));
     }
 
     private void spawnCookie() {
@@ -288,13 +301,32 @@ public class Game extends GameApplication {
     }
 
     private void spawnPlusOne() {
-        entityBuilder()
-                .type(Type.PLUSONE)
-                .at(FXGLMath.random(0, getAppWidth() - 64), FXGLMath.random(64, getAppHeight() - 64))
-                .viewWithBBox("plusone.png")
-                .collidable()
-                .with(new OffscreenCleanComponent())
-                .buildAndAttach();
+        if(Pointer.level == 1) {
+            entityBuilder()
+                    .type(Type.PLUSNUMBER)
+                    .at(FXGLMath.random(0, getAppWidth() - 64), FXGLMath.random(64, getAppHeight() - 64))
+                    .viewWithBBox("plusone.png")
+                    .collidable()
+                    .with(new OffscreenCleanComponent())
+                    .buildAndAttach();
+        } else if (Pointer.level == 2) {
+            entityBuilder()
+                    .type(Type.PLUSNUMBER)
+                    .at(FXGLMath.random(0, getAppWidth() - 64), FXGLMath.random(64, getAppHeight() - 64))
+                    .viewWithBBox("plusfour.png")
+                    .collidable()
+                    .with(new OffscreenCleanComponent())
+                    .buildAndAttach();
+        } else {
+            entityBuilder()
+                    .type(Type.PLUSNUMBER)
+                    .at(FXGLMath.random(0, getAppWidth() - 64), FXGLMath.random(64, getAppHeight() - 64))
+                    .viewWithBBox("plusnine.png")
+                    .collidable()
+                    .with(new OffscreenCleanComponent())
+                    .buildAndAttach();
+        }
+
     }
 
     private void initShop() {
@@ -306,7 +338,7 @@ public class Game extends GameApplication {
         shop.setVisible(false);
 
         buyFarmer = entityBuilder()
-                .at(getAppWidth()/2-325, getAppHeight()/2-300)
+                .at(getAppWidth()/2-325, getAppHeight()/2-230)
                 .view("buyfarmer.png")
                 .onClick(entity -> {
                     Shop.handleBuyFarmer();
@@ -320,7 +352,7 @@ public class Game extends GameApplication {
         buyFarmer.setVisible(false);
 
         buyMiner = entityBuilder()
-                .at(getAppWidth()/2-325, getAppHeight()/2-200)
+                .at(getAppWidth()/2-325, getAppHeight()/2-130)
                 .view("buyminer.png")
                 .onClick(entity -> {
                     Shop.handleBuyMiner();
@@ -334,7 +366,7 @@ public class Game extends GameApplication {
         buyMiner.setVisible(false);
 
         buyWorker = entityBuilder()
-                .at(getAppWidth()/2-325, getAppHeight()/2-100)
+                .at(getAppWidth()/2-325, getAppHeight()/2-30)
                 .view("buyworker.png")
                 .onClick(entity -> {
                     Shop.handleBuyWorker();
@@ -348,7 +380,7 @@ public class Game extends GameApplication {
         buyWorker.setVisible(false);
 
         buyBaker = entityBuilder()
-                .at(getAppWidth()/2-325, getAppHeight()/2)
+                .at(getAppWidth()/2-325, getAppHeight()/2+70)
                 .view("buybaker.png")
                 .onClick(entity -> {
                     Shop.handleBuyBaker();
@@ -362,10 +394,15 @@ public class Game extends GameApplication {
         buyBaker.setVisible(false);
 
         buyPointer = entityBuilder()
-                .at(getAppWidth()/2-325, getAppHeight()/2+100)
+                .at(getAppWidth()/2-290, getAppHeight()/2+170)
                 .view("pointer.png")
                 .onClick(entity -> {
                     Shop.handleBuyPointer();
+                    if(Pointer.level == 3) {
+                        pointerData.textProperty().set("LVL: MAX");
+                    } else {
+                        pointerData.textProperty().set("LVL: " + Pointer.level + " - Price: " + Pointer.levelPrice[Pointer.level-1]);
+                    }
                 })
                 .buildAndAttach();
         buyPointer.setVisible(false);

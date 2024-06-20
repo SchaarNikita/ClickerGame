@@ -37,8 +37,8 @@ public class Shop {
     }
 
     public static void handleBuyPointer() {
-        if(Cookie.amount >= 1 && Pointer.level != 3) {
-            Cookie.amount -= 1;
+        if(Cookie.amount >= Pointer.levelPrice[Pointer.level-1] && Pointer.level != 3) {
+            Cookie.amount -= Pointer.levelPrice[Pointer.level-1];
             Pointer.levelUp();
         }
     }
