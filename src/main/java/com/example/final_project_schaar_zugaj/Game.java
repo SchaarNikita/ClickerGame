@@ -62,7 +62,7 @@ public class Game extends GameApplication {
         settings.setGameMenuEnabled(true);
         settings.setFullScreenAllowed(false);
         settings.setTitle("Clicker Game");
-        settings.setVersion("1.0");
+        settings.setVersion("1.0.1");
         settings.setEnabledMenuItems(EnumSet.of(MenuItem.EXTRA));
         settings.setApplicationMode(ApplicationMode.RELEASE);
         settings.getCredits().addAll(Arrays.asList(
@@ -91,7 +91,7 @@ public class Game extends GameApplication {
                 new Achievement("Cookie Prince", "Get 1000000 cookies", "cookieAmount", 1000000),
                 new Achievement("Cookie King", "Get 10000000 cookies", "cookieAmount", 10000000),
                 new Achievement("Cookie Emperor", "Get 100000000 cookies", "cookieAmount", 100000000),
-                new Achievement("Cookie God", "Get 1000000000 cookies", "cookieAmount", 1000000000)
+                new Achievement("LVL 100 Cookie Boss", "Get 1000000000 cookies", "cookieAmount", 1000000000)
         ));
     }
 
